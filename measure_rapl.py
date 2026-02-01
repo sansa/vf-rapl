@@ -126,6 +126,7 @@ def run_k6(workload_js: str, base_url: str, endpoint: str, rate: int, duration_s
     env["BASE_URL"] = base_url.rstrip("/")
     env["ENDPOINT"] = endpoint
     env["RATE"] = str(rate)
+    env["K6_DURATION"] = f"{duration_s}s"
 
     cmd = [
         "k6",
