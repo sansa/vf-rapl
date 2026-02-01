@@ -10,21 +10,21 @@ import { check, sleep } from "k6";
 
 const BASE_URL = __ENV.BASE_URL || "http://localhost:9966";
 const ENDPOINT = __ENV.ENDPOINT || "/api/owners";
-// const RATE = Number(__ENV.RATE || "10");
-// const DURATION = __ENV.K6_DURATION || "180s";
+const RATE = Number(__ENV.RATE || "10");
+const DURATION = __ENV.K6_DURATION || "180s";
 
-// export const options = {
-//   scenarios: {
-//     constant_rate: {
-//       executor: "constant-arrival-rate",
-//       rate: RATE,
-//       timeUnit: "1s",
-//       duration: DURATION,
-//       preAllocatedVUs: 50,
-//       maxVUs: 200,
-//     },
-//   },
-// };
+export const options = {
+  scenarios: {
+    constant_rate: {
+      executor: "constant-arrival-rate",
+      rate: RATE,
+      timeUnit: "1s",
+      duration: DURATION,
+      preAllocatedVUs: 20,
+      maxVUs: 200,
+    },
+  },
+};
 
 export default function () {
   const url = `${BASE_URL}${ENDPOINT}`;

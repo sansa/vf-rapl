@@ -89,25 +89,46 @@ def run_cmd(cmd: list[str], env: Optional[dict[str, str]] = None) -> Tuple[int, 
 #         avg_latency_ms=float(avg) if avg is not None else None,
 #     )
 
+# def parse_k6_summary(summary_json: dict) -> K6Summary:
+#     """
+#     Parse k6 --summary-export JSON (flat metrics format).
+#     Example:
+#       metrics.http_req_duration.p(95)
+#       metrics.http_req_duration.avg
+#       metrics.http_reqs.count
+#     """
+#     metrics = summary_json.get("metrics") or {}
+
+#     dur = metrics.get("http_req_duration") or {}
+#     reqs = metrics.get("http_reqs") or {}
+
+#     # durations are in ms
+#     p95 = dur.get("p(95)")
+#     avg = dur.get("avg")
+
+#     # requests count is typically here
+#     requests = reqs.get("count")
+
+#     return K6Summary(
+#         requests=float(requests) if requests is not None else None,
+#         p95_latency_ms=float(p95) if p95 is not None else None,
+#         avg_latency_ms=float(avg) if avg is not None else None,
+#     )
+
 def parse_k6_summary(summary_json: dict) -> K6Summary:
-    """
-    Parse k6 --summary-export JSON (flat metrics format).
-    Example:
-      metrics.http_req_duration.p(95)
-      metrics.http_req_duration.avg
-      metrics.http_reqs.count
-    """
-    metrics = summary_json.get("metrics") or {}
+    metrics = summary_json.get("metrics", {}) or {}
 
-    dur = metrics.get("http_req_duration") or {}
-    reqs = metrics.get("http_reqs") or {}
+    def get_metric_value(metric_name: str, key: str):
+        m = metrics.get(metric_name, {}) or {}
+        # format A: metrics.http_req_duration.values["p(95)"]
+        if isinstance(m.get("values"), dict) and key in m["values"]:
+            return m["values"].get(key)
+        # format B: metrics.http_req_duration["p(95)"]
+        return m.get(key)
 
-    # durations are in ms
-    p95 = dur.get("p(95)")
-    avg = dur.get("avg")
-
-    # requests count is typically here
-    requests = reqs.get("count")
+    requests = get_metric_value("http_reqs", "count")
+    p95 = get_metric_value("http_req_duration", "p(95)")
+    avg = get_metric_value("http_req_duration", "avg")
 
     return K6Summary(
         requests=float(requests) if requests is not None else None,
@@ -135,11 +156,7 @@ def run_k6(workload_js: str, base_url: str, endpoint: str, rate: int, duration_s
         "--summary-export",
         out_json_path,
         "--vus",
-        "10",
-        "--rps",
-        str(rate),
-        "--duration",
-        f"{duration_s}s",
+        "1",
         workload_js,
     ]
 
