@@ -98,7 +98,7 @@ def run_k6(workload_js: str, base_url: str, endpoint: str, rate: int, duration_s
     env["BASE_URL"] = base_url.rstrip("/")
     env["ENDPOINT"] = endpoint
     env["RATE"] = str(rate)
-    env["K6_DURATION"] = f"{duration_s}s"
+    env["DURATION"] = f"{duration_s}s"
 
     cmd = [
         "k6",
@@ -106,12 +106,11 @@ def run_k6(workload_js: str, base_url: str, endpoint: str, rate: int, duration_s
         "--quiet",
         "--summary-export",
         out_json_path,
-        "--vus",
-        "1",
         workload_js,
     ]
 
     rc, _stdout, stderr = run_cmd(cmd, env=env)
+    #print(_stdout)
     if rc != 0:
         raise RuntimeError(f"k6 failed (exit {rc}). stderr:\n{stderr}")
 

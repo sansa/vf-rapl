@@ -1,0 +1,5 @@
+variant,run_id,endpoint,rate_rps,warmup_s,duration_s,energy_j,requests,energy_per_request_j,p95_latency_ms,avg_latency_ms,notes
+v0_baseline,2,/petclinic/api/owners,10,30,30,219.248401,6056,0.036203501,4.329,3.685,
+v0_baseline,2,/petclinic/api/owners,10,0,30,216.027828,6267,0.034470692,4.288,3.530,
+v0_baseline,2,/petclinic/api/owners,10,0,30,216.774164,6228,0.034806385,4.303,3.558,
+v0_baseline,2,/petclinic/api/owners,10,0,30,139.797860,301,0.464444718,5.225,5.047,
