@@ -66,55 +66,6 @@ def run_cmd(cmd: list[str], env: Optional[dict[str, str]] = None) -> Tuple[int, 
     return proc.returncode, proc.stdout, proc.stderr
 
 
-# def parse_k6_summary(summary_json: dict) -> K6Summary:
-#     """
-#     Parse k6 --summary-export JSON.
-#     We look for:
-#       - metrics.http_reqs.values.count
-#       - metrics.http_req_duration.values["p(95)"]
-#       - metrics.http_req_duration.values.avg
-#     """
-#     metrics = summary_json.get("metrics", {})
-#     http_reqs = metrics.get("http_reqs", {}).get("values", {})
-#     http_req_duration = metrics.get("http_req_duration", {}).get("values", {})
-
-#     requests = http_reqs.get("count")
-#     p95 = http_req_duration.get("p(95)")
-#     avg = http_req_duration.get("avg")
-
-#     # k6 reports durations in milliseconds
-#     return K6Summary(
-#         requests=float(requests) if requests is not None else None,
-#         p95_latency_ms=float(p95) if p95 is not None else None,
-#         avg_latency_ms=float(avg) if avg is not None else None,
-#     )
-
-# def parse_k6_summary(summary_json: dict) -> K6Summary:
-#     """
-#     Parse k6 --summary-export JSON (flat metrics format).
-#     Example:
-#       metrics.http_req_duration.p(95)
-#       metrics.http_req_duration.avg
-#       metrics.http_reqs.count
-#     """
-#     metrics = summary_json.get("metrics") or {}
-
-#     dur = metrics.get("http_req_duration") or {}
-#     reqs = metrics.get("http_reqs") or {}
-
-#     # durations are in ms
-#     p95 = dur.get("p(95)")
-#     avg = dur.get("avg")
-
-#     # requests count is typically here
-#     requests = reqs.get("count")
-
-#     return K6Summary(
-#         requests=float(requests) if requests is not None else None,
-#         p95_latency_ms=float(p95) if p95 is not None else None,
-#         avg_latency_ms=float(avg) if avg is not None else None,
-#     )
-
 def parse_k6_summary(summary_json: dict) -> K6Summary:
     metrics = summary_json.get("metrics", {}) or {}
 

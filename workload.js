@@ -13,6 +13,9 @@ const ENDPOINT = __ENV.ENDPOINT || "/api/owners";
 const RATE = Number(__ENV.RATE || "10");
 const DURATION = __ENV.K6_DURATION || "180s";
 
+console.log(`INIT: BASE_URL=${BASE_URL} ENDPOINT=${ENDPOINT} RATE=${RATE} DURATION=${DURATION}`);
+
+
 export const options = {
   scenarios: {
     constant_rate: {
